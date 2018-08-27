@@ -1,0 +1,15 @@
+{
+  "ServerID":1,
+  "TcpPort":"5956",
+  "WebsocketPort":"5957",
+  "MaxConnection":10000,
+  "WirteQueLen":10,
+  "MaxMsgLen":4096,
+  "BigEndian":false,
+  "Distributed":true,
+  "PublisherNum":8,
+  "PublishAddr":"nats://localhost:4222",
+  "SubcriberNum":8,
+  "SubcribAddr":"nats://localhost:4222",
+  "Kafka":""
+}
