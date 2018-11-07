@@ -1,10 +1,6 @@
 package main
 
 import (
-	"os"
-	"os/signal"
-	"fmt"
-	"syscall"
 	"github.com/qianlidongfeng/log"
 	"github.com/qianlidongfeng/sparrow/gate"
 	"github.com/golang/protobuf/proto"

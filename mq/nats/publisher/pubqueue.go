@@ -47,5 +47,5 @@ func (this *PubQueue) Init(publisherNum uint64,pubAddr string){
 }
 
 func (this *PubQueue)Push(subject string,msg []byte){
-	this.dataQue<-mq.PubData{Subject:subject,}
+	this.dataQue<-mq.PubData{Subject:subject,Msg:msg}
 }
