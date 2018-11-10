@@ -93,7 +93,7 @@ func (this *GateServer) Run() error{
 }
 
 
-func (this *GateServer)RigsterClientMsg(tag string,handle func(gt *GateServer,sid int64,msg []byte)){
+func (this *GateServer)RigsterLocalMsg(tag string,handle func(gt *GateServer,sid int64,msg []byte)){
 	this.router.registerClientMsg(tag,handle)
 }
 
@@ -156,17 +156,10 @@ func (this *GateServer) Publish(subject string,sid int64,msg[]byte) error{
 	return nil
 }
 
-func (this *GateServer) WriteMsg(sid int64,tag string,msg []byte){
+func (this *GateServer) WriteMsg(sid int64,msg []byte){
 	conn,ok := this.conns[sid]
 	if ok{
-		tagLen := len(tag)
-		msgLen := len(msg)
-		length := tagLen+msgLen+1
-		data:=make([]byte,length)
-		data[0]=byte(tagLen)
-		copy(data[1:],[]byte(tag))
-		copy(data[1+tagLen:],msg)
-		err:=conn.write(data)
+		err:=conn.write(msg)
 		if err != nil{
 			log.Warn(err)
 		}

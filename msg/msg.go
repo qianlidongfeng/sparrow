@@ -1,5 +1,5 @@
 package msg
-func MakeMsg(tag string,data []byte) []byte{
+func MakeMqMsg(tag string,data []byte) []byte{
 	tagLen := len(tag)
 	dataLen := len(data)
 	b:=make([]byte,tagLen+dataLen+1)

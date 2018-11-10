@@ -20,11 +20,21 @@ func chat(msg []byte){
 		fmt.Println(err)
 	}
 	fmt.Println(string(info.Msg))
-	data,err:=proto.Marshal(&pdb.Replysession{SessionID:info.SessionID,Msg:[]byte("fuck you,操你妈")})
+	tag:="respone"
+	content:="I am sparrow"
+	tagLen := len(tag)
+	contentLen := len(content)
+	length := tagLen+contentLen+1
+	data:=make([]byte,length)
+	data[0]=byte(tagLen)
+	copy(data[1:],[]byte(tag))
+	copy(data[1+tagLen:],content)
+	respone,err:=proto.Marshal(&pdb.Replysession{SessionID:info.SessionID,Msg:data})
 	if err != nil{
 		fmt.Println(err)
+		return
 	}
-	pubqueue.Push(info.GateSubject,Msg.MakeMsg("replysession",data))
+	pubqueue.Push(info.GateSubject,Msg.MakeMqMsg("mqMessage",respone))
 }
 
 

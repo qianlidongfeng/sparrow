@@ -7,36 +7,32 @@ import (
 	pdb "github.com/qianlidongfeng/sparrow/example/chatroom/proto"
 )
 
-func onChatMessage(gt *gate.GateServer,sid int64,msg []byte){
-	m := `
-公司发动机公司公司及公司广东省可根据数据可是感觉是gdsfkgjsgsjgsjgkldjgsdljgdklgjdsggs公司发动机公司公司及公司广东省可根据数据可是感觉是gdsfkgjsgsjgsjgkldjgsdljgdklgjdsggs公司发动机公司公司及公司广东省可根据数据可是感觉是gdsfkgjsgsjgsjgkldjgsdljgdklgjdsggs公司发动机公司公司及公司广东省可根据数据可是感觉是gdsfkgjsgsjgsjgkldjgsdljgdklgjdsggs公司发动机公司公司及公司广东省可根据数据可是感觉是gdsfkgjsgsjgsjgkldjgsdljgdklgjdsggs公司发动机公司公司及公司广东省可根据数据可是感觉是gdsfkgjsgsjgsjgkldjgsdljgdklgjdsggs公司发动机公司公司及公司广东省可根据数据可是感觉是gdsfkgjsgsjgsjgkldjgsdljgdklgjdsggs公司发动机公司公司及公司广东省可根据数据可是感觉是gdsfkgjsgsjgsjgkldjgsdljgdklgjdsggs
-`
-	gt.WriteMsg(sid,"chatmessage",[]byte(m))
-}
-func onJoinroom(gt *gate.GateServer,sid int64,msg []byte){
-	gt.WriteMsg(sid,"joinroom",msg)
+func onLocalMessage(gt *gate.GateServer,sid int64,msg []byte){
+	tag:="local"
+	content:="I am sparrow"
+	tagLen := len(tag)
+	contentLen := len(content)
+	length := tagLen+contentLen+1
+	data:=make([]byte,length)
+	data[0]=byte(tagLen)
+	copy(data[1:],[]byte(tag))
+	copy(data[1+tagLen:],content)
+	gt.WriteMsg(sid,data)
 }
 
-func mqCloseSession(gt *gate.GateServer,msg[]byte){
-	info := &pdb.Replysession{}
-	proto.Unmarshal(msg,info)
-	sid:=info.SessionID
-	gt.SessionClose(sid)
-}
-func mqReplysession(gt *gate.GateServer,msg[]byte){
+
+func onMqMessage(gt *gate.GateServer,msg[]byte){
 	info := &pdb.Replysession{}
 	proto.Unmarshal(msg,info)
 	sid:=info.SessionID
 	data:=info.Msg
-	gt.WriteMsg(sid,"hehe",data)
+	gt.WriteMsg(sid,data)
 }
 
 func main(){
 	gateServer:=gate.NewServer()
-	gateServer.RigsterClientMsg("chatmessage",onChatMessage)
-	gateServer.RigsterClientMsg("joinroom",onJoinroom)
-	gateServer.RigsterMqMsg("closesession",mqCloseSession)
-	gateServer.RigsterMqMsg("replysession",mqReplysession)
+	gateServer.RigsterLocalMsg("localMessage",onLocalMessage)
+	gateServer.RigsterMqMsg("mqMessage",onMqMessage)
 	err :=gateServer.Run()
 	if err != nil{
 		log.Fatal(err)
