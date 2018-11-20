@@ -5,7 +5,7 @@ sparrow支持分布式和单机部署，分布式需要消息中间件(nats)支�
 
 sparrow的基本思想是，对同步性以及消息顺序要求不高的请求，采用消息中间件(nats)转发到微服务处理，采用protobuf格式传输。 对同步性和消息顺序要求高的请求，建议采用grpc的方式处理，[grpc负载均衡方法](https://blog.csdn.net/weixin_43733451/article/details/84262506)
 
-sparrow支持tcp和websocket两种传输协议,相关配置在gate_config.json配置文件里面
+sparrow支持tcp和websocket两种传输协议,相关配置在gate_config.json配置文件里面，
 demo里有本地网关直接返回处理，mq微服务处理，grpc处理三种方式
 
 # 消息格式
