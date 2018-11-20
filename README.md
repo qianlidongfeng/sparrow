@@ -68,10 +68,17 @@ go install sparrowClient.go
 
 复制example/chatroom/gate_config.json到bin目录，启动gate,mqServer,grpcServer
 
-启动客户端测试demo,sparrowClient,你会看到打印出服务器返回的消息,返回消息的tag和内容:
+启动客户端sparrowClient,你会看到打印出服务器返回的消息,返回消息的tag和内容:
+
 tag:NORMAL
+
 data:hello I am sparrow
+
 tag:GRPC
+
 data:hello I am sparrow
+
 tag:MQ
+
 data:hello I am sparrow
+
