@@ -1,3 +1,0 @@
-package sparrow
-func Test(){
-}
