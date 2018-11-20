@@ -1,0 +1,14 @@
+syntax = "proto3";
+package msg;
+
+message MsgToServer {
+    string GateSubject =1;
+	int64 SessionID = 2;
+	bytes Data=3;
+}
+
+message MsgToGate{
+    int64 SessionID = 1;
+    string Tag = 2;
+    bytes Data = 3;
+}

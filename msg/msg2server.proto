@@ -1,8 +1,0 @@
-syntax = "proto3";
-package msg;
-
-message msg2server {
-    string GateSubject =1;
-	int64 SessionID = 2;
-	bytes msg=4;
-}

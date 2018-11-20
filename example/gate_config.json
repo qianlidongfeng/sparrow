@@ -10,6 +10,5 @@
   "PublisherNum":8,
   "PublishAddr":"nats://localhost:4222",
   "SubcriberNum":8,
-  "SubcribAddr":"nats://localhost:4222",
-  "Kafka":""
+  "SubcribAddr":"nats://localhost:4222"
 }

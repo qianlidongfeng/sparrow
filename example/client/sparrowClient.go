@@ -13,9 +13,9 @@ func main(){
 	if err != nil {
 		panic(err)
 	}
-	tag:="chat"
-	//tag:="localMessage"
-	data:="hello sparrow"
+	tag:="grpc"
+	//tag:="message2"
+	data:="hello"
 	taglen:=len(tag)
 	datalen:=len(data)
 	msg:=make([]byte,taglen+datalen+5)

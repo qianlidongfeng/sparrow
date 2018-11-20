@@ -8,7 +8,6 @@ import (
 	"github.com/qianlidongfeng/sparrow/mq/nats/subcriber"
 	"github.com/qianlidongfeng/sparrow/uuid"
 	Msg "github.com/qianlidongfeng/sparrow/msg"
-	"github.com/golang/protobuf/proto"
 	"strings"
 	"sync"
 	"fmt"
@@ -58,14 +57,21 @@ func (this *GateServer) Run() error{
 	this.gateSubject=strings.ToUpper(fmt.Sprintf("%x",this.snowflake.Generate()))
 	if g_config.Distributed{
 		this.subQueue.Register(this.gateSubject,this.gateSubject,func(msg []byte){
-			tagLen := msg[0]
-			tag := msg[1:tagLen+1]
-			this.router.routeMqMsg(string(tag),this,msg[1+tagLen:])
+			sid ,tag,data,err:=Msg.UnMarshalMqMsgToGate(msg)
+			if err != nil{
+				log.Warn(err)
+				return
+			}
+			this.router.routeMsg(tag,this,sid,data)
 		})
+		//00000000是广播地址，所有网关都能收到
 		this.subQueue.Register("00000000",this.gateSubject,func(msg []byte){
-			tagLen := msg[0]
-			tag := msg[1:tagLen+1]
-			this.router.routeMqMsg(string(tag),this,msg[1+tagLen:])
+			sid ,tag,data,err:=Msg.UnMarshalMqMsgToGate(msg)
+			if err != nil{
+				log.Warn(err)
+				return
+			}
+			this.router.routeMsg(tag,this,sid,data)
 		})
 		this.pubQueue.Init(g_config.PublisherNum,g_config.PublishAddr)
 		this.subQueue.Init(g_config.SubcriberNum,g_config.SubcribAddr)
@@ -93,13 +99,10 @@ func (this *GateServer) Run() error{
 }
 
 
-func (this *GateServer)RigsterLocalMsg(tag string,handle func(gt *GateServer,sid int64,msg []byte)){
-	this.router.registerClientMsg(tag,handle)
+func (this *GateServer)RigsterMsg(tag string,handle func(gt *GateServer,sid int64,msg []byte)){
+	this.router.registerMsg(tag,handle)
 }
 
-func (this *GateServer)RigsterMqMsg(tag string,handle func(gt *GateServer,msg []byte)){
-	this.router.registerMqMsg(tag,handle)
-}
 
 func (this *GateServer)accept(conn net.Conn){
 	this.limiterAcquire()
@@ -138,7 +141,7 @@ func (this *GateServer) readMsg(sid int64){
 		}
 		tagLen:=msgData[0]
 		tag := msgData[1:tagLen+1]
-		if g_config.Distributed&&!this.router.routeClientMsg(string(tag),this,sid,msgData[1+tagLen:]){
+		if g_config.Distributed&&!this.router.routeMsg(string(tag),this,sid,msgData[1+tagLen:]){
 			err := this.Publish(string(tag),sid,msgData[1+tagLen:])
 			if err != nil{
 				log.Warn(err)
@@ -148,11 +151,11 @@ func (this *GateServer) readMsg(sid int64){
 }
 
 func (this *GateServer) Publish(subject string,sid int64,msg[]byte) error{
-	msg2server,err:= proto.Marshal(&Msg.Msg2Server{GateSubject:this.gateSubject, SessionID:sid, Msg:msg})
-	if err != nil{
+	msg2server,err:=Msg.MakeMqMsgToServer(this.gateSubject,sid,msg)
+	if err!=nil{
 		return err
 	}
-	this.pubQueue.Push(subject, msg2server)
+	this.pubQueue.Publish(subject, msg2server)
 	return nil
 }
 
@@ -203,4 +206,3 @@ func (this *GateServer) ShutDown(){
 		this.SessionClose(k)
 	}
 }
-
