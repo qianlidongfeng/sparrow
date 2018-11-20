@@ -17,17 +17,29 @@ demo里有本地网关直接返回处理，mq微服务处理，grpc处理三种�
 
 # 配置文件说明
 ServerID 网关id,分布式识别网关用的
+
 TcpPort tcp监听端口
+
 WebsocketPort websocket监听端口
+
 MaxConnection 最大连接数
+
 WirteQueLen 子线程的写入缓冲队列大小
+
 MaxMsgLen 消息最大长度
+
 BigEndian 是否采用大端序
+
 Distributed 是否采用中间件分布式
+
 PublisherNum 发布队列大小
+
 PublishAddr 发布消息中间件地址
+
 SubcriberNum 订阅队列大小
+
 SubcribAddr 订阅消息中间件地址
+
 
 # 安装sparrow
 go get github.com/qianlidongfeng/sparrow/gate
