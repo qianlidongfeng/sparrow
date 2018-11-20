@@ -51,6 +51,12 @@ SubcribAddr 订阅消息中间件地址
 
 # 安装sparrow
 go get github.com/qianlidongfeng/sparrow/gate
+
+或
+
+git clone https://github.com/qianlidongfeng/sparrow.git 克隆到gopath相关目录下
+
+
 # 安装消息中间件(nats)
 [nats安装方法](https://www.nats.io/documentation/managing_the_server/installing/)
 nats是一款消息中间件，由golang编写,去中心化，支持分布式横向扩展，能非常方便实现微服务负载均衡。速度极快，官网测试是目前市面上最快的。缺点是消息无法持久化。
