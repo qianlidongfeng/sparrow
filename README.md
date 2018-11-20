@@ -51,7 +51,7 @@ go get github.com/qianlidongfeng/sparrow/gate
 
 cd example
 
-安装聊天服务器
+安装网关服务器
 go install gate.go
 
 安装mq微服务
