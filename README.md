@@ -3,7 +3,7 @@ sparrow是一个分布式服务器框架，采用golang编写
 
 sparrow支持分布式和单机部署，分布式需要消息中间件(nats)支持，配置文件gate_config.json中的Distributed字段决定是否采用中间件分布式架构
 
-sparrow的基本思想是，对同步性以及消息顺序要求不高的请求，采用消息中间件(nats)转发到微服务处理，采用protobuf格式传输。 对同步性和消息顺序要求高的请求，建议采用grpc的方式处理，[grpc负载均衡方法](https://blog.csdn.net/weixin_43733451/article/details/84262506)
+sparrow的基本思想是，对同步性以及消息顺序要求不高的请求，采用消息中间件(nats)转发到微服务处理。 对同步性和消息顺序要求高的请求，建议采用grpc的方式处理，[grpc负载均衡方法](https://blog.csdn.net/weixin_43733451/article/details/84262506)
 
 sparrow支持tcp和websocket两种传输协议,相关配置在gate_config.json配置文件里面，
 demo里有本地网关直接返回处理，mq微服务处理，grpc处理三种方式
@@ -53,7 +53,7 @@ SubcribAddr 订阅消息中间件地址
 go get github.com/qianlidongfeng/sparrow/gate
 # 安装消息中间件(nats)
 [nats安装方法](https://www.nats.io/documentation/managing_the_server/installing/)
-nats是一款消息中间件，由golang编写,去中心化，支持分布式横向扩展。速度极快，官网测试是目前市面上最快的。缺点是消息无法持久化。
+nats是一款消息中间件，由golang编写,去中心化，支持分布式横向扩展，能非常方便实现微服务负载均衡。速度极快，官网测试是目前市面上最快的。缺点是消息无法持久化。
 
 # 运行demo
 
