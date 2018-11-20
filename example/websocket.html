@@ -1,0 +1,50 @@
+<html>
+<body>
+<script>
+    function test(ws,tag,data){
+        var buffer=new TextEncoder("utf-8").encode(tag+data);
+        var binary = new Uint8Array(buffer.length+1);
+        binary[0]=tag.length;
+        for(var i=0;i<buffer.length;i++){
+            binary[i+1]=buffer[i];
+        }
+        ws.send(binary.buffer);
+    }
+    var ws = new WebSocket("ws://localhost:5957");
+    ws.binaryType = 'arraybuffer';
+    ws.onopen = function()
+    {
+        var binary = new Uint8Array([1, 2, 3]);
+        var tag="normal";
+        var data="hello";
+        test(ws,tag,data);
+        tag="grpc";
+        data="hello";
+        test(ws,tag,data);
+        tag="other";
+        data="hello";
+        test(ws,tag,data);
+    };
+    ws.onmessage = function (evt)
+    {
+        var binary = new Uint8Array(evt.data);
+        var tagLen=binary[0]
+        var tagBuffer=new Uint8Array(tagLen)
+        var dataBuffer=new Uint8Array(binary.length-tagLen-1);
+        for(var i=0;i<tagBuffer.length;i++){
+            tagBuffer[i]=binary[1+i];
+        }
+        for(var i=0;i<dataBuffer.length;i++){
+            dataBuffer[i]=binary[1+tagLen+i];
+        }
+        var tag=new TextDecoder("utf-8").decode(tagBuffer);
+        var data=new TextDecoder("utf-8").decode(dataBuffer);
+        alert("tag:"+tag+"\n"+"data:"+data);
+    };
+    ws.onclose = function()
+    {
+        alert("连接已关闭...");
+    };
+</script>
+</body>
+</html>

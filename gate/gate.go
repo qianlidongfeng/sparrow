@@ -107,7 +107,8 @@ func (this *GateServer)RigsterMsg(tag string,handle func(gt *GateServer,sid int6
 func (this *GateServer)accept(conn net.Conn){
 	this.limiterAcquire()
 	localAddr:=conn.LocalAddr()
-	port := strings.Split(localAddr.String(),":")[1]
+	s:=strings.Split(localAddr.String(),":")
+	port := s[len(s)-1]
 	var c Conn
 	if port == g_config.TcpPort{
 		c = &TcpConn{connection:conn,sendQue:make(chan []byte,g_config.WirteQueLen)}
@@ -137,14 +138,20 @@ func (this *GateServer) readMsg(sid int64){
 	for{
 		msgData,err:= conn.read()
 		if err != nil{
+			log.Warn(err)
 			break
 		}
 		tagLen:=msgData[0]
+		if int(tagLen+1) > len(msgData){
+			log.Warn("bad message")
+			break
+		}
 		tag := msgData[1:tagLen+1]
 		if g_config.Distributed&&!this.router.routeMsg(string(tag),this,sid,msgData[1+tagLen:]){
 			err := this.Publish(string(tag),sid,msgData[1+tagLen:])
 			if err != nil{
 				log.Warn(err)
+				break
 			}
 		}
 	}
