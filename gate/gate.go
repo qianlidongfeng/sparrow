@@ -138,7 +138,6 @@ func (this *GateServer) readMsg(sid int64){
 	for{
 		msgData,err:= conn.read()
 		if err != nil{
-			log.Warn(err)
 			break
 		}
 		tagLen:=msgData[0]
