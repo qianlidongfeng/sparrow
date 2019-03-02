@@ -1,7 +1,7 @@
 # 概述
-sparrow是一个分布式服务器框架，采用golang编写
+sparrow是一个分布式服务器框架，采用golang编写，只实现了网络和路由部分，其他组件根据自己需求自行添加就是
 
-sparrow支持分布式和单机部署，分布式需要消息中间件(nats)支持，配置文件gate_config.json中的Distributed字段决定是否采用中间件分布式架构
+sparrow支持分布式和单机部署，分布式需要消息中间件(nats)支持，配置文件gate_config.json中的Distributed字段决定是否采用中间件分布式架构,。
 
 sparrow的基本思想是，对同步性以及消息顺序要求不高的请求，采用消息中间件(nats)转发到微服务处理。 对同步性和消息顺序要求高的请求，建议采用grpc的方式处理，[grpc负载均衡方法](https://blog.csdn.net/weixin_43733451/article/details/84262506)
 
